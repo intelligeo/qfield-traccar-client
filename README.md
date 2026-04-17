@@ -1,70 +1,84 @@
 # QField Traccar Client
 
-App-wide plugin per [QField](https://qfield.org/) che invia la posizione GPS del dispositivo a un server [Traccar](https://www.traccar.org/) usando il protocollo HTTP OsmAnd.
+App-wide plugin for [QField](https://qfield.org/) that sends the device GPS position to a [Traccar](https://www.traccar.org/) server using the OsmAnd HTTP protocol.
 
-## Funzionalità
+## Features
 
-- Invio periodico della posizione GPS (latitudine, longitudine, altitudine, velocità, direzione, accuratezza)
-- Intervallo di invio configurabile
-- Pannello di configurazione integrato nell'interfaccia QField
-- Log degli eventi in tempo reale (fino a 20 voci, ispirato a *StatusActivity* del client Android Traccar)
-- Impostazioni persistenti tra le sessioni (URL server, Device ID, intervallo, stato tracking)
+- Periodic GPS position reporting (latitude, longitude, altitude, speed, bearing, accuracy)
+- Configurable reporting interval
+- Settings panel integrated directly in the QField UI
+- Real-time event log (up to 20 entries, inspired by the *StatusActivity* of the Traccar Android client)
+- Persistent settings across sessions (server URL, device ID, interval, tracking state)
 
-## Protocollo
+## Protocol
 
 ```
-GET http://<server>:<porta>?id=<deviceId>&timestamp=<unix>&lat=<lat>&lon=<lon>&speed=<speed>&bearing=<bearing>&altitude=<alt>&accuracy=<acc>
+GET http://<server>:<port>?id=<deviceId>&timestamp=<unix>&lat=<lat>&lon=<lon>&speed=<speed>&bearing=<bearing>&altitude=<alt>&accuracy=<acc>
 ```
 
-Compatibile con la porta OsmAnd di Traccar (default: `5055`).
+Compatible with the Traccar OsmAnd port (default: `5055`).
 
-## Installazione
+## Installation
 
-1. Scaricare il file ZIP dalla [pagina Releases](https://github.com/intelligeo/qfield-traccar-client/releases)
-2. In QField aprire **Impostazioni → Plugin**
-3. Toccare **Installa plugin da URL** e incollare l'URL del file ZIP  
-   oppure caricare il file ZIP direttamente dal dispositivo
+1. Download the ZIP file from the [Releases page](https://github.com/intelligeo/qfield-traccar-client/releases)
+2. In QField open **Settings → Plugins**
+3. Tap **Install plugin from URL** and paste the ZIP file URL,  
+   or load the ZIP file directly from the device
 
-## Configurazione
+## Configuration
 
-Dopo l'installazione toccare il pulsante ![icona cloud upload](icon.svg) nella toolbar di QField per aprire il pannello:
+After installation, tap the ![cloud upload icon](icon.svg) button in the QField toolbar to open the settings panel:
 
-| Campo | Descrizione | Default |
+| Field | Description | Default |
 |---|---|---|
-| Server URL | Indirizzo del server Traccar | `http://traccar.intelligeo.net:5055` |
-| Device ID | Identificativo univoco del dispositivo | `qfield-device-1` |
-| Intervallo | Secondi tra un invio e l'altro | `10` |
+| Server URL | Traccar server address | `http://traccar.intelligeo.net:5055` |
+| Device ID | Unique device identifier | `qfield-device-1` |
+| Interval | Seconds between each position report | `10` |
 
 ## Packaging
 
-Lo script `package.py` crea il file ZIP pronto per il deploy:
+The `package.py` script builds a deploy-ready ZIP file:
 
 ```bash
 python package.py
-# oppure specificando la cartella di output:
-python package.py --output /percorso/output
+# or specifying a custom output folder:
+python package.py --output /path/to/output
 ```
 
-Il file ZIP viene generato in `dist/` con il nome `qfield-traccar-client-v<version>.zip`.  
-La versione è letta automaticamente da `metadata.txt`.
+The ZIP is generated in `dist/` with the name `qfield-traccar-client-v<version>.zip`.  
+The version is read automatically from `metadata.txt`.  
+If `lrelease` (Qt Linguist tool) is on `PATH` or in one of the well-known Qt installation paths, `.ts` translation files are compiled to `.qm` automatically before the ZIP is created.
 
-## File del plugin
+> **Note:** `lrelease` is **not** bundled with QGIS. Install it via the [Qt Online Installer](https://www.qt.io/download-qt-installer) (Qt → Tools → Qt Linguist), then add `<Qt>/bin` to your `PATH`.
 
-| File | Descrizione |
+## Translations
+
+All UI strings are wrapped in `qsTr()`. Translation files live in `i18n/`:
+
+| File | Language |
 |---|---|
-| `main.qml` | Logica e UI del plugin (QML/JS) |
-| `metadata.txt` | Nome, versione, autore, icona |
-| `icon.svg` | Icona del plugin |
+| `i18n/traccar-client_it.ts` | Italian |
 
-## Requisiti
+To add a new language, copy `traccar-client_it.ts`, rename it to `traccar-client_<locale>.ts` and translate the `<translation>` elements.  
+Compile with `lrelease i18n/traccar-client_<locale>.ts`.
 
-- QField ≥ 3.x (con supporto app-wide plugin)
-- Server Traccar ≥ 5.x
+## Plugin files
 
-## Licenza
+| File | Description |
+|---|---|
+| `main.qml` | Plugin logic and UI (QML/JS) |
+| `metadata.txt` | Name, version, author, icon |
+| `icon.svg` | Plugin icon |
+
+## Requirements
+
+- QField ≥ 3.x (with app-wide plugin support)
+- Traccar server ≥ 5.x
+
+## License
 
 [GPL-2.0](LICENSE)
 
-## Autore
+## Author
 
 INTELLIGEO.ch — Dr. Sara Lanini-Maggi

@@ -13,7 +13,10 @@ import Theme
  * Log feature mirrors traccar-client-android StatusActivity:
  *   - circular buffer of up to LOG_LIMIT timestamped entries
  *   - colour-coded (green / orange / red)
- *   - "Svuota" button to clear
+ *   - "Clear" button to clear
+ *
+ * All UI strings are wrapped in qsTr() for i18n.
+ * Translation files live in i18n/<locale>.ts  (compiled to .qm at deploy time).
  */
 Item {
     id: root
@@ -28,7 +31,7 @@ Item {
     }
 
     // --- Status banner -------------------------------------------------------
-    property string statusText:  "Fermo"
+    property string statusText:  qsTr("Idle")
     property color  statusColor: "#888888"
 
     // --- Log model (max LOG_LIMIT entries, like StatusActivity) --------------
@@ -62,7 +65,7 @@ Item {
         iconColor:  cfg.tracking ? "#4CAF50" : "#FFFFFF"
         bgcolor:    Theme.toolButtonBackgroundColor
         round:      true
-        ToolTip.text: cfg.tracking ? "Traccar: attivo" : "Traccar: fermo"
+        ToolTip.text: cfg.tracking ? qsTr("Traccar: active") : qsTr("Traccar: idle")
         onClicked:  settingsPopup.open()
     }
 
@@ -98,7 +101,7 @@ Item {
 
                 // Title
                 Label {
-                    text: "Traccar Client"
+                    text: qsTr("Traccar Client")
                     font.bold:       true
                     font.pixelSize:  16
                     color:           "#FFFFFF"
@@ -126,7 +129,7 @@ Item {
                 }
 
                 // Server URL
-                Label { text: "Server URL"; color: "#AAAAAA"; font.pixelSize: 12 }
+                Label { text: qsTr("Server URL"); color: "#AAAAAA"; font.pixelSize: 12 }
                 TextField {
                     id: urlField
                     Layout.fillWidth: true
@@ -138,7 +141,7 @@ Item {
                 }
 
                 // Device ID
-                Label { text: "Device ID"; color: "#AAAAAA"; font.pixelSize: 12 }
+                Label { text: qsTr("Device ID"); color: "#AAAAAA"; font.pixelSize: 12 }
                 TextField {
                     id: deviceField
                     Layout.fillWidth: true
@@ -150,7 +153,7 @@ Item {
                 }
 
                 // Interval
-                Label { text: "Intervallo (secondi)"; color: "#AAAAAA"; font.pixelSize: 12 }
+                Label { text: qsTr("Interval (seconds)"); color: "#AAAAAA"; font.pixelSize: 12 }
                 TextField {
                     id: intervalField
                     Layout.fillWidth: true
@@ -174,7 +177,7 @@ Item {
                     spacing: 8
 
                     Button {
-                        text: "Avvia tracking"
+                        text: qsTr("Start tracking")
                         Layout.fillWidth: true
                         enabled: !cfg.tracking
                         background: Rectangle { color: parent.enabled ? "#4CAF50" : "#333"; radius: 6 }
@@ -191,12 +194,12 @@ Item {
                             sendTimer.interval = cfg.interval * 1000
                             sendTimer.start()
                             traccarButton.iconColor = "#4CAF50"
-                            root.addLog("Tracking avviato (ogni " + cfg.interval + " s)", "warn")
+                            root.addLog(qsTr("Tracking started (every %1 s)").arg(cfg.interval), "warn")
                         }
                     }
 
                     Button {
-                        text: "Stop"
+                        text: qsTr("Stop")
                         Layout.fillWidth: true
                         enabled: cfg.tracking
                         background: Rectangle { color: parent.enabled ? "#F44336" : "#333"; radius: 6 }
@@ -208,8 +211,8 @@ Item {
                             cfg.tracking = false
                             sendTimer.stop()
                             traccarButton.iconColor = Theme.toolButtonColor
-                            root.addLog("Tracking fermato", "warn")
-                            root.statusText  = "Fermo"
+                            root.addLog(qsTr("Tracking stopped"), "warn")
+                            root.statusText  = qsTr("Idle")
                             root.statusColor = "#888888"
                         }
                     }
@@ -223,13 +226,13 @@ Item {
                     Layout.fillWidth: true
 
                     Label {
-                        text: "Log eventi  (ultimi " + root.LOG_LIMIT + ")"
+                        text: qsTr("Event log (last %1)").arg(root.LOG_LIMIT)
                         color: "#AAAAAA"; font.pixelSize: 12
                         Layout.fillWidth: true
                     }
 
                     Button {
-                        text: "Svuota"
+                        text: qsTr("Clear")
                         padding: 6; leftPadding: 10; rightPadding: 10
                         background: Rectangle { color: "#333333"; radius: 4 }
                         contentItem: Label {
@@ -238,7 +241,7 @@ Item {
                         }
                         onClicked: {
                             logModel.clear()
-                            root.statusText  = "Log svuotato"
+                            root.statusText  = qsTr("Log cleared")
                             root.statusColor = "#888888"
                         }
                     }
@@ -276,7 +279,7 @@ Item {
                     Label {
                         anchors.centerIn: parent
                         visible:         logModel.count === 0
-                        text:            "Nessun evento registrato"
+                        text:            qsTr("No events recorded")
                         color:           "#555555"
                         font.pixelSize:  11
                         font.italic:     true
@@ -286,7 +289,7 @@ Item {
                 // Close
                 Button {
                     Layout.fillWidth: true
-                    text: "Chiudi"
+                    text: qsTr("Close")
                     background: Rectangle { color: "#333333"; radius: 6 }
                     contentItem: Label {
                         text: parent.text; color: "#CCCCCC"
@@ -314,13 +317,13 @@ Item {
 
         var posSource = iface.findItemByObjectName("positionSource")
         if (!posSource || !posSource.active) {
-            root.addLog("Positioning non attivo", "error")
+            root.addLog(qsTr("Positioning not active"), "error")
             return
         }
 
         var info = posSource.positionInformation
         if (!info || !info.latitudeValid || !info.longitudeValid) {
-            root.addLog("In attesa segnale GPS...", "warn")
+            root.addLog(qsTr("Waiting for GPS signal…"), "warn")
             return
         }
 
@@ -343,7 +346,7 @@ Item {
                  + "&altitude="  + alt.toFixed(1)
                  + "&accuracy="  + hacc.toFixed(1)
 
-        root.addLog("Invio -> " + lat.toFixed(5) + ", " + lon.toFixed(5), "warn")
+        root.addLog(qsTr("Sending → %1, %2").arg(lat.toFixed(5)).arg(lon.toFixed(5)), "warn")
 
         var xhr = new XMLHttpRequest()
         xhr.open("GET", url, true)
@@ -352,16 +355,15 @@ Item {
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== XMLHttpRequest.DONE) return
             if (xhr.status >= 200 && xhr.status < 400) {
-                root.addLog("OK  lat=" + lat.toFixed(5)
-                            + " lon="  + lon.toFixed(5)
-                            + " acc="  + hacc.toFixed(0) + "m", "ok")
+                root.addLog(qsTr("OK  lat=%1 lon=%2 acc=%3m")
+                            .arg(lat.toFixed(5)).arg(lon.toFixed(5)).arg(hacc.toFixed(0)), "ok")
             } else {
-                root.addLog("Errore HTTP " + xhr.status + " - " + xhr.statusText, "error")
+                root.addLog(qsTr("HTTP error %1 – %2").arg(xhr.status).arg(xhr.statusText), "error")
             }
         }
 
         xhr.ontimeout = function() {
-            root.addLog("Timeout (" + cfg.serverUrl + ")", "error")
+            root.addLog(qsTr("Timeout (%1)").arg(cfg.serverUrl), "error")
         }
 
         xhr.send()
@@ -374,12 +376,12 @@ Item {
 
         iface.addItemToPluginsToolbar(traccarButton)
 
-        root.addLog("Plugin caricato", "ok")
+        root.addLog(qsTr("Plugin loaded"), "ok")
 
         if (cfg.tracking) {
             sendTimer.interval = cfg.interval * 1000
             sendTimer.start()
-            root.addLog("Tracking ripreso (ogni " + cfg.interval + " s)", "warn")
+            root.addLog(qsTr("Tracking resumed (every %1 s)").arg(cfg.interval), "warn")
         }
     }
 }

@@ -15,6 +15,8 @@ Utilizzo:
 import argparse
 import configparser
 import pathlib
+import shutil
+import subprocess
 import sys
 import zipfile
 
@@ -28,6 +30,49 @@ EXCLUDE = {
     ".gitignore",
     "dist",
 }
+
+# Candidati per lrelease (compilatore traduzioni Qt).
+# lrelease non è incluso in QGIS; installarlo con:
+#   winget install --id=TheQtCompany.QtOnlineInstaller  (poi Qt > Tools > Qt Linguist)
+# oppure scaricare QtTools standalone da https://download.qt.io/official_releases/qt/
+LRELEASE_CANDIDATES = [
+    "lrelease",
+    r"C:\Qt\6.7.0\mingw_64\bin\lrelease.exe",
+    r"C:\Qt\5.15.2\msvc2019_64\bin\lrelease.exe",
+    r"C:\Program Files\QGIS 3.40.7\apps\qt5\bin\lrelease.exe",
+    r"C:\OSGeo4W\apps\Qt5\bin\lrelease.exe",
+]
+
+
+def find_lrelease() -> str | None:
+    for candidate in LRELEASE_CANDIDATES:
+        if shutil.which(candidate):
+            return candidate
+        if pathlib.Path(candidate).is_file():
+            return candidate
+    return None
+
+
+def compile_translations(base: pathlib.Path) -> None:
+    i18n_dir = base / "i18n"
+    ts_files = list(i18n_dir.glob("*.ts")) if i18n_dir.exists() else []
+    if not ts_files:
+        return
+
+    lrelease = find_lrelease()
+    if not lrelease:
+        print("  [ATTENZIONE] lrelease non trovato: le traduzioni .ts non verranno compilate.")
+        print("               Installa Qt Tools o aggiungi lrelease al PATH.")
+        return
+
+    for ts in ts_files:
+        qm = ts.with_suffix(".qm")
+        result = subprocess.run([lrelease, str(ts), "-qm", str(qm)],
+                                capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"  compilato: {qm.relative_to(base).as_posix()}")
+        else:
+            print(f"  [ERRORE] lrelease su {ts.name}: {result.stderr.strip()}")
 
 
 def read_version(metadata_path: pathlib.Path) -> str:
@@ -47,8 +92,12 @@ def collect_files(base: pathlib.Path) -> list[pathlib.Path]:
         if item.is_file():
             rel = item.relative_to(base)
             # Esclude se una delle parti del percorso è nella lista EXCLUDE
-            if not any(part in EXCLUDE for part in rel.parts):
-                files.append(rel)
+            if any(part in EXCLUDE for part in rel.parts):
+                continue
+            # Esclude i sorgenti di traduzione (si distribuiscono i .qm compilati)
+            if item.suffix == ".ts":
+                continue
+            files.append(rel)
     return files
 
 
@@ -69,6 +118,9 @@ def build_zip(output_dir: pathlib.Path) -> pathlib.Path:
         sys.exit(1)
 
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Compila le traduzioni .ts → .qm prima di creare lo ZIP
+    compile_translations(PLUGIN_DIR)
 
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for rel in files:
