@@ -57,7 +57,10 @@ All UI strings are wrapped in `qsTr()`. Translation files live in `i18n/`:
 
 | File | Language |
 |---|---|
-| `i18n/traccar-client_it.ts` | Italian |
+| `i18n/traccar-client_en.ts` | English (en_US) |
+| `i18n/traccar-client_it.ts` | Italian (it_IT) |
+| `i18n/traccar-client_fr.ts` | French (fr_FR) |
+| `i18n/traccar-client_de.ts` | German – Switzerland (de_CH) |
 
 To add a new language, copy `traccar-client_it.ts`, rename it to `traccar-client_<locale>.ts` and translate the `<translation>` elements.  
 Compile with `lrelease i18n/traccar-client_<locale>.ts`.
