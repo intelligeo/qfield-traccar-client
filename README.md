@@ -13,7 +13,8 @@ App-wide plugin for [QField](https://qfield.org/) that sends the device GPS posi
 ## Screenshots
 
 | Load | Seek | Connected | Some error |
-|![Load plugin interface](screenshots/1_open.jpg)|![Seeking for GNNS connection](screenshots/2_seek.jpg)|![GNSS Connection established](screenshots/3_connect.jpg)|![Some errors occured...](screenshots/4_error.jpg)|
+|---|---|---|---|
+|<img src="screenshots/1_open.jpg" width="200"/>|<img src="screenshots/2_seek.jpg" width="200"/>|<img src="screenshots/3_connect.jpg" width="200"/>|<img src="screenshots/4_error.jpg" width="200"/>|
 
 ## Protocol
 
