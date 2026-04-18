@@ -112,15 +112,16 @@ def build_zip(output_dir: pathlib.Path) -> pathlib.Path:
     zip_name = f"{plugin_name}-v{version}.zip"
     zip_path = output_dir / zip_name
 
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Compila le traduzioni .ts → .qm PRIMA di raccogliere i file,
+    # così i .qm generati vengono inclusi nello ZIP
+    compile_translations(PLUGIN_DIR)
+
     files = collect_files(PLUGIN_DIR)
     if not files:
         print("ERRORE: nessun file trovato da pacchettizzare.", file=sys.stderr)
         sys.exit(1)
-
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    # Compila le traduzioni .ts → .qm prima di creare lo ZIP
-    compile_translations(PLUGIN_DIR)
 
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for rel in files:
