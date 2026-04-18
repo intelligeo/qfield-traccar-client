@@ -20,11 +20,12 @@ import subprocess
 import sys
 import zipfile
 
-PLUGIN_DIR = pathlib.Path(__file__).parent.resolve()
+PLUGIN_DIR  = pathlib.Path(__file__).resolve().parent
+SCRIPT_NAME = pathlib.Path(__file__).resolve().name
 
 # File/cartelle da escludere dallo ZIP
 EXCLUDE = {
-    pathlib.Path(__file__).name,   # questo script
+    SCRIPT_NAME,           # questo script
     "__pycache__",
     ".git",
     ".gitignore",
