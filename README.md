@@ -16,6 +16,21 @@ App-wide plugin for [QField](https://qfield.org/) that sends the device GPS posi
 |---|---|---|---|
 |<img src="screenshots/1_open.jpg" width="200"/>|<img src="screenshots/2_seek.jpg" width="200"/>|<img src="screenshots/3_connect.jpg" width="200"/>|<img src="screenshots/4_error.jpg" width="200"/>|
 
+## Use Cases
+
+Real-time GPS tracking adds clear value in a wide range of field survey scenarios:
+
+- **Utility & infrastructure inspection** — track inspection crews across large pipeline, powerline or road networks; supervisors can monitor progress in real time and re-deploy teams without radio calls.
+- **Environmental monitoring campaigns** — log the exact path followed during vegetation, water quality or soil sampling transects so samples can later be correlated with the surveyor's exact trajectory.
+- **Search & rescue coordination** — deploy QField-equipped teams in rugged terrain and monitor their positions live on the Traccar map to coordinate search grids and ensure no area is missed.
+- **Archaeological or geological survey** — record the walked track alongside point features collected in QField, producing a complete audit trail of "where was the geologist/archaeologist at every moment".
+- **Forestry and land management** — verify that all parcels in a large concession have actually been visited during inspection rounds, using the stored track as legal evidence of compliance.
+- **Disaster response & damage assessment** — dispatch multiple field teams after an earthquake or flood; HQ can see instantly which zones have been assessed and which still need coverage.
+- **Construction site supervision** — confirm that quality-control inspectors have walked every section of a worksite, and flag if a team stays static for too long (possible incident alert).
+- **Multi-team topographic campaigns** — when several surveyors work in parallel, the project manager can prevent duplicate coverage and dynamically assign new areas as zones are completed.
+- **Remote lone-worker safety** — satisfy duty-of-care requirements by proving a field technician working alone in an isolated area is moving normally; trigger an alert if the device stops reporting.
+- **Wildlife or biodiversity transects** — register the surveyor's exact path so species observations collected in QField can be spatially joined to the walked transect for density-estimation analyses.
+
 ## Protocol
 
 ```
