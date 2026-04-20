@@ -24,7 +24,7 @@ Item {
     // --- Persistent settings -------------------------------------------------
     Settings {
         id: cfg
-        property string serverUrl: "http://traccar.intelligeo.net:5055"
+        property string serverUrl: "http://demo3.traccar.org:5055"
         property string deviceId:  "qfield-device-1"
         property int    interval:  10
         property bool   tracking:  false

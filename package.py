@@ -30,6 +30,9 @@ EXCLUDE = {
     ".git",
     ".gitignore",
     "dist",
+    "screenshots",         # immagini di anteprima, non necessarie al plugin
+    "README.md",
+    "LICENSE",
 }
 
 # Candidati per lrelease (compilatore traduzioni Qt).

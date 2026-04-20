@@ -37,8 +37,8 @@ After installation, tap the plugin's button in the QField toolbar to open the se
 
 | Field | Description | Default |
 |---|---|---|
-| Server URL | Traccar server address | `e.g. http://demo.traccar.org:5055` |
-| Device ID | Unique device identifier | `e.g. qfield-device-1` |
+| Server URL | Traccar server address | `http://demo3.traccar.org:5055` |
+| Device ID | Unique device identifier | `qfield-device-1` |
 | Interval | Seconds between each position report | `10` |
 
 ## Requirements
