@@ -11,7 +11,7 @@ import Theme
  * Protocol: GET /?id=<id>&timestamp=<unix>&lat=<lat>&lon=<lon>&speed=<speed>&bearing=<bearing>&altitude=<alt>&accuracy=<acc>
  *
  * Log feature mirrors traccar-client-android StatusActivity:
- *   - circular buffer of up to LOG_LIMIT timestamped entries
+ *   - circular buffer of up to logLimit timestamped entries
  *   - colour-coded (green / orange / red)
  *   - "Clear" button to clear
  *
@@ -32,10 +32,10 @@ Item {
 
     // --- Status banner -------------------------------------------------------
     property string statusText:  qsTr("Idle")
-    property color  statusColor: "#888888"
+    property string statusColor: "#888888"
 
-    // --- Log model (max LOG_LIMIT entries, like StatusActivity) --------------
-    readonly property int LOG_LIMIT: 20
+    // --- Log model (max logLimit entries, like StatusActivity) ---------------
+    readonly property int logLimit: 20
 
     ListModel { id: logModel }
 
@@ -51,7 +51,7 @@ Item {
         var entry = hh + ":" + mm + ":" + ss + " - " + message
 
         logModel.insert(0, { "msg": entry, "col": color })
-        while (logModel.count > LOG_LIMIT)
+        while (logModel.count > logLimit)
             logModel.remove(logModel.count - 1)
 
         root.statusText  = message
@@ -65,12 +65,10 @@ Item {
         iconColor:  cfg.tracking ? "#4CAF50" : "#FFFFFF"
         bgcolor:    Theme.toolButtonBackgroundColor
         round:      true
-        ToolTip.text: cfg.tracking ? qsTr("Traccar: active") : qsTr("Traccar: idle")
         onClicked:  settingsPopup.open()
     }
 
     // --- Main popup ----------------------------------------------------------
-    // parent set in Component.onCompleted (Overlay.overlay is null in plugins)
     Popup {
         id: settingsPopup
         width:       Math.min(420, parent && parent.width > 0 ? parent.width - 32 : 380)
@@ -226,7 +224,7 @@ Item {
                     Layout.fillWidth: true
 
                     Label {
-                        text: qsTr("Event log (last %1)").arg(root.LOG_LIMIT)
+                        text: qsTr("Event log (last %1)").arg(root.logLimit)
                         color: "#AAAAAA"; font.pixelSize: 12
                         Layout.fillWidth: true
                     }
@@ -371,11 +369,8 @@ Item {
 
     // --- Init ----------------------------------------------------------------
     Component.onCompleted: {
-        // Set popup parent after iface is ready (Overlay.overlay is null in plugins)
         settingsPopup.parent = iface.mainWindow().contentItem
-
         iface.addItemToPluginsToolbar(traccarButton)
-
         root.addLog(qsTr("Plugin loaded"), "ok")
 
         if (cfg.tracking) {

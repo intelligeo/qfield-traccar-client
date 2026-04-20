@@ -1,6 +1,7 @@
 [general]
 name=QField Traccar Client
 description=Sends GPS position from QField to a Traccar server using the OsmAnd HTTP protocol.
-author=INTELLIGEO.ch by Dr. Sara Lanini-Maggi
+author=INTELLIGEO.ch
 icon=icon.svg
-version=0.1.0
+version=0.3.0
+uuid=qfield-traccar-client
